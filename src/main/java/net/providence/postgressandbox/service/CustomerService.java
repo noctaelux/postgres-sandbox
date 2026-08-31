@@ -2,9 +2,9 @@ package net.providence.postgressandbox.service;
 
 import net.providence.postgressandbox.dto.CustomerDTO;
 import net.providence.postgressandbox.exception.ResourceFoundException;
-import org.springframework.data.crossstore.ChangeSetPersister;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public interface CustomerService {
 
@@ -12,5 +12,5 @@ public interface CustomerService {
 
     List<CustomerDTO> retrieveCustomers();
 
-    CustomerDTO retrieveCustomer(Long id) throws ChangeSetPersister.NotFoundException;
+    CustomerDTO retrieveCustomer(Long id) throws NoSuchElementException;
 }

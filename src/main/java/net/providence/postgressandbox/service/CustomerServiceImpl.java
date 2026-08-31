@@ -5,10 +5,10 @@ import net.providence.postgressandbox.dto.CustomerDTO;
 import net.providence.postgressandbox.exception.ResourceFoundException;
 import net.providence.postgressandbox.model.Customer;
 import net.providence.postgressandbox.repository.CustomerRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -25,7 +25,7 @@ public class CustomerServiceImpl implements CustomerService{
         Optional<Customer> customerOptional = customerRepository.findByEmail(customer.getEmail());
 
         if(customerOptional.isPresent()){
-            throw new ResourceFoundException("El correo ya existe");
+            throw new ResourceFoundException("El correo " + customer.getEmail() + " ya existe");
         }
 
 
@@ -39,10 +39,10 @@ public class CustomerServiceImpl implements CustomerService{
     }
 
     @Override
-    public CustomerDTO retrieveCustomer(Long id) throws ChangeSetPersister.NotFoundException {
+    public CustomerDTO retrieveCustomer(Long id) throws NoSuchElementException {
         return customerRepository.findById(id)
                 .map(this::mapCustomerDTO)
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+                .orElseThrow(() -> new NoSuchElementException("No se encuentra el cliente con el id: " + id));
     }
 
     private Customer mapCustomer(CustomerDTO customerDTO){
