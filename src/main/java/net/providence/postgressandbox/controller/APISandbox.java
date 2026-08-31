@@ -2,10 +2,14 @@ package net.providence.postgressandbox.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import net.providence.postgressandbox.model.Customer;
+import net.providence.postgressandbox.dto.CustomerDTO;
+import net.providence.postgressandbox.exception.ResourceFoundException;
 import net.providence.postgressandbox.service.CustomerService;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +25,19 @@ public class APISandbox {
 
     @PostMapping("/v1/customer/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void customerRegister(@Valid @RequestBody Customer customer) {
-        System.out.println("Customer registered: " + customer);
+    public void customerRegister(@Valid @RequestBody CustomerDTO customer) throws ResourceFoundException {
         customerService.saveCustomer(customer);
+    }
+
+    @GetMapping("/v1/customer/list")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CustomerDTO> customerList(){
+        return customerService.retrieveCustomers();
+    }
+
+    @GetMapping("/v1/customer/{id}")
+    public CustomerDTO customerDetail(@PathVariable Long id) throws ChangeSetPersister.NotFoundException {
+        return customerService.retrieveCustomer(id);
     }
 
 

@@ -1,5 +1,7 @@
 package net.providence.postgressandbox.handler;
 
+import net.providence.postgressandbox.exception.ResourceFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -26,4 +28,18 @@ public class APIExceptionHandler {
         });
         return errors;
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ExceptionHandler(ChangeSetPersister.NotFoundException.class)
+    public void HandleNotFoundException(){}
+
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_CONTENT)
+    @ExceptionHandler(ResourceFoundException.class)
+    public Map<String,String> UnprocessableRequest(ResourceFoundException ex){
+
+        Map<String,String> error = new HashMap<>();
+        error.put("message",ex.getMessage());
+        return error;
+    }
+
 }
